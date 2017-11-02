@@ -40,7 +40,7 @@
 
 ## Getting started
 
-This full stack project can be started using
+Please follow below steps to use this application
 
 ```
     git clone https://github.com/ankur-dauneria/item-catalogue.git
