@@ -43,8 +43,8 @@
 This full stack project can be started using
 
 ```
-    git clone <repository>
-    cd <repository>
+    git clone https://github.com/ankur-dauneria/item-catalogue.git
+    cd item-catalogue
 ```
 
 ```python
