@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Catalogue App</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                    <a class="navbar-brand" href="{{ url_for('showcontents') }}"><i class="fa fa-briefcase" aria-hidden="true"></i> Catalogue App</a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right logindetails">
+                        <li>
+                            <ul class="nav navbar-nav">
+                                <li>
+                                    <div class="logincred">
+                                        <div class="loginpic">
+                                            <figure class="creator">
+                                                <img src="{{creator.picture}}" title={{creator.name}}>
+                                            </figure>
+                                        </div>
+                                        <div class="logoutdetails">
+                                            {%if 'username' not in session %}
+                                            <a href="{{url_for('showLogin')}}" class="btn btn-default loginButtonClass">
+                                                         Login </a> {% else %}
+                                            <a href="{{url_for('gdisconnect')}}" class="btn btn-default logoutButtonClass">Logout </a> {% endif %}
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="container">
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> {{ message }}
+        </div>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+    <div class="container">
+        <div class="row abc">
+            <div class="well contents">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-2 categories">
+                    <ul class="nav">
+                        <h4><a href="{{ url_for('newcategory') }}" class="btn btn-default addCat">Add Category</a></h4>
+                        <h2 class="categories_heading"> Categories</h2>
+                        {% for category in categories %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('showallitems', category_name=category.name) }}">{{category.name}}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-lg-9 col-md-12 col-sm-12 items">
+                    <ul class="nav">
+                        <h2><a href="{{ url_for('editcategory', category_name=category_name) }}" class="btn btn-default">Edit Category</a>&nbsp;<a href="{{ url_for('deletecategory', category_name=category_name) }}" class="btn btn-default">Delete Category</a>&nbsp;
+                            <a href="{{ (url_for('newitem')) }}" class="btn btn-default nav-link">Add Item </a>
+                        </h2>
+                        <h2 class="items_heading2 latestItems_heading"> {{category_name}} Items ({{numberofrecords}} items) </h2>
+                        <br> {% for item in items %}
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-3 item-tile text-center">
+                            {% for ii in categories %} {% if item.category_id == ii.id %}
+
+                            <div class="text-center">
+                                <a class="itemtextlink" href="{{ url_for('showaitem', category_name=ii.name, item_name=item.title) }}">
+                                    <img src="{{ item.image_url }}" class="rounded img-responsive img-rounded" width="200" height="200" /> {% if item.user_id == creator.id %}
+                                    <img src="{{creator.picture}}" class="img-rounded userimageonitem" width="35" height="35" /> {% endif %}
+                                    <div class="item-text">
+                                        <span><strong>{{item.title}}</strong></span><span class="text-muted"> ({{ii.name}})</span>
+                                    </div>
+                                </a> {% endif %} {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</body>
+
+</html>

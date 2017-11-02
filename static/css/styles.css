@@ -1,0 +1,275 @@
+.navbar-brand {
+    font-size: 30px;
+    font-family: 'Roboto', sans-serif;
+    padding-top: 28px;
+    letter-spacing: 1px;
+}
+
+body {
+    padding-top: 20px;
+    font-family: 'Open Sans', sans-serif;
+    background: #141E30;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #243B55, #141E30);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #243B55, #141E30);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.form-login {
+    background-color: #EDEDED;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 15px;
+    border-color: #d2d2d2;
+    border-width: 5px;
+    box-shadow: 0 1px 0 #cfcfcf;
+}
+
+.categories_heading {
+    font-family: 'Roboto', sans-serif;
+    padding-bottom: 35px;
+    border-bottom: 1px solid #e8e6e6;
+}
+
+.latestItems_heading {
+    font-family: 'Roboto', sans-serif;
+    border-bottom: 1px solid #e8e6e6;
+    padding-bottom: 35px;
+}
+
+.wrapper {
+    text-align: center;
+}
+
+.loginheading {
+    border: 0 solid #fff;
+    border-bottom-width: 1px;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.itylicText {
+    color: grey;
+}
+
+.line-break {
+    clear: both;
+}
+
+h2 {
+    color: #777;
+}
+
+h3 {
+    font-weight: bold;
+}
+
+.addCat {
+    margin-top: 15px;
+}
+
+.loginWelcomeText {
+    color: black;
+}
+
+#result {
+    font-family: 'Roboto', sans-serif;
+    color: black;
+}
+
+.loginpic {
+    float: left;
+}
+
+.logoutdetails {
+    float: left;
+    margin-top: 10px;
+}
+
+.createbutton {
+    margin-top: 20px;
+}
+
+.cancelbutton {
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+.deletebutton {
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+.editbutton {
+    margin-top: 20px;
+}
+
+.logindetails {
+    padding-top: 15px;
+    font-size: 20px;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 1px;
+}
+
+.navbar-default {
+    min-height: 80px;
+}
+
+.category-list {
+    list-style: none;
+}
+
+.contents {
+    margin-left: 15px;
+    margin-right: 15px;
+    display: flex;
+}
+
+.categories {
+    border-right: 1px solid #e8e6e6;
+}
+
+.creator img {
+    width: 50px;
+    border-radius: 50%;
+}
+
+.creator {
+    text-align: right;
+    float: right;
+    margin-right: 20px;
+}
+
+.userimageonitem {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    border-radius: 100%;
+    border: 1px solid white;
+}
+
+.formerrors {
+    margin-top: 15px;
+    margin-bottom: -5px;
+}
+
+.item-tile {
+    margin-bottom: 20px;
+    padding-top: 20px;
+    font-family: 'Lato', sans-serif;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+
+/*
+.item-tile:hover {
+    background-color: #EEE;
+    cursor: pointer;
+    outline: 1px solid orange;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}*/
+
+.rounded {
+    border-bottom: 10px solid #e8e6e6;
+}
+
+.item-text {
+    margin-top: 10px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    color: black;
+}
+
+.item-tile .itemtextlink {
+    text-decoration: none;
+}
+
+.itemtextlink:hover .item-text {
+    letter-spacing: 0.5px;
+    color: #1d344e;
+}
+
+.itemtextlink:hover .rounded {
+    border-bottom: 10px solid #659cdf;
+}
+
+.jj {
+    padding: 20px;
+    overflow: hidden;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.jj img {
+    margin-right: 15px;
+    float: left;
+}
+
+.item_para {
+    font-size: 17px;
+}
+
+@media (max-width: 480px) {
+    .navbar-toggle {
+        margin-top: 20px;
+    }
+    .loginpic {
+        margin-left: 25px;
+    }
+    .loginButtonClass {
+        width: 20%;
+        margin-left: 30px;
+    }
+    .navbar-collapse.in {
+        overflow: hidden;
+    }
+    #myNavbar {
+        overflow: hidden;
+    }
+    .items_heading2 {
+        font-size: 20px;
+    }
+    .navbar-brand {
+        font-size: 25px;
+        padding-top: 28px;
+    }
+    .categories_heading {
+        font-size: 20px;
+    }
+    .latestItems_heading {
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .navbar-toggle {
+        margin-top: 20px;
+    }
+    .navbar-collapse.in {
+        overflow: hidden;
+    }
+    #myNavbar {
+        overflow: hidden;
+    }
+    .loginpic {
+        margin-left: 25px;
+    }
+    .loginButtonClass {
+        width: 20%;
+        margin-left: 30px;
+    }
+    .items_heading2 {
+        font-size: 25px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {}
+
+@media (min-width: 980px) {}
