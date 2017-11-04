@@ -22,6 +22,7 @@ from flask_uploads import UploadSet, IMAGES, configure_uploads,\
                     patch_request_class
 from werkzeug import secure_filename
 import os
+from functools import wraps
 
 
 app = Flask(__name__)
@@ -259,16 +260,24 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
+def login_required(f):
+    '''It verifies if its an authenticated user'''
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' in login_session:
+            return f(*args, **kwargs)
+        else:
+            return redirect('/login')
+    return decorated_function
+
 # Fetches JSON for complete Catalogue.
 
-
 @app.route('/catalogue.JSON')
+@login_required
 def showenteriesJSON():
     ''' creating the returning json object
         for getting all categories and respective items
     '''
-    if 'username' not in login_session:
-        return redirect('/login')
     allcategories = session.query(Category).all()
     categories = []
     for cat in allcategories:
@@ -287,6 +296,7 @@ def showenteriesJSON():
 
 
 @app.route('/catalogue/<category_name>/categoryitems.JSON')
+@login_required
 def getitemsJSON(category_name):
     '''
     Get JSON for all items in a category available in the application database
@@ -294,8 +304,6 @@ def getitemsJSON(category_name):
     Arguments:
     category_name: Name of the category
     '''
-    if 'username' not in login_session:
-        return redirect('/login')
     aCategory = session.query(Category).filter_by(name=category_name).one()
     allitems = session.query(Items).filter_by(category_id=aCategory.id).all()
     return jsonify(Items=[item.serialize for item in allitems])
@@ -304,14 +312,13 @@ def getitemsJSON(category_name):
 
 
 @app.route('/catalogue/categories.JSON')
+@login_required
 def getAllCategoriesJSON():
     '''
     Get JSON for all categories available in application database.
 
     Arguments: None
     '''
-    if 'username' not in login_session:
-        return redirect('/login')
     allCategories = session.query(Category).all()
     return jsonify(
         Categories=[category.serialize for category in allCategories])
@@ -320,6 +327,7 @@ def getAllCategoriesJSON():
 
 
 @app.route('/catalogue/<category_name>/<item_name>/JSON')
+@login_required
 def getAItemJSON(category_name, item_name):
     '''
     Get JSON for a item present in a category in the application database
@@ -328,8 +336,6 @@ def getAItemJSON(category_name, item_name):
     category_name: Name of the Category
     item_name: Name of the item
     '''
-    if 'username' not in login_session:
-        return redirect('/login')
     aCategory = session.query(Category).filter_by(name=category_name).one()
     aItem = session.query(Items).filter(and_(
         Items.category_id == aCategory.id, Items.title == item_name)).one()
@@ -339,15 +345,13 @@ def getAItemJSON(category_name, item_name):
 
 
 @app.route('/catalogue/category/new', methods=['GET', 'POST'])
+@login_required
 def newcategory():
     '''
     Creates a new Category for an authenticated/registered user
 
     Arguments: None
     '''
-    if 'username' not in login_session:
-        return redirect('/login')
-
     form = NewCategoryForm(request.form)   # form validation
 
     if request.method == 'POST' and form.validate_on_submit():
@@ -370,6 +374,7 @@ def newcategory():
 
 
 @app.route('/catalogue/<category_name>/edit', methods=['GET', 'POST'])
+@login_required
 def editcategory(category_name):
     '''
     Edit a Category
@@ -378,8 +383,6 @@ def editcategory(category_name):
     category_name: Name of the category
     '''
     editcategory = session.query(Category).filter_by(name=category_name).one()
-    if 'username' not in login_session:
-        return redirect('/login')
 
     form = EditCategoryForm(request.form)   # validation form
 
@@ -409,6 +412,7 @@ def editcategory(category_name):
 
 
 @app.route('/catalogue/<category_name>/delete', methods=['GET', 'POST'])
+@login_required
 def deletecategory(category_name):
     '''
     Delete a Category
@@ -418,8 +422,7 @@ def deletecategory(category_name):
     '''
     categorytodelete = session.query(Category).filter_by(
         name=category_name).one()
-    if 'username' not in login_session:
-        return redirect('/login')
+
     # Fetch all the items in a category
     # created by different users.
     items_all = session.query(Items).filter_by(
@@ -427,26 +430,27 @@ def deletecategory(category_name):
     # check and alert if any item present in this
     # category which is not created by current
     # user and delete the rest
-    for item in items_all:
-        if item.user_id != login_session['user_id']:
+
+    if request.method == 'POST':
+        if categorytodelete.user_id != login_session['user_id']:
             alertJS = "<script>function myFunction() "
             alertJS += "{alert('You are not authorized to delete this."
-            alertJS += " This category has items of other users.'"
+            alertJS += " Please create your own in order to delete.'"
             alertJS += ");}</script><body onload='myFunction()''>"
             return alertJS
-        else:
+        for item in items_all:
+            if item.user_id != login_session['user_id']:
+                alertJS = "<script>function myFunction() "
+                alertJS += "{alert('You are not authorized to delete this."
+                alertJS += " This category has items of other users.'"
+                alertJS += ");}</script><body onload='myFunction()''>"
+                return alertJS
+        for item in items_all:
             old_filename = item.image_filename
             old_file_path = images.path(old_filename)
             os.remove(old_file_path)
             session.delete(item)
             session.commit()
-    if categorytodelete.user_id != login_session['user_id']:
-        alertJS = "<script>function myFunction() "
-        alertJS += "{alert('You are not authorized to delete this."
-        alertJS += " Please create your own in order to delete.'"
-        alertJS += ");}</script><body onload='myFunction()''>"
-        return alertJS
-    if request.method == 'POST':
         session.delete(categorytodelete)
         session.commit()
         flash("Category deleted!")
@@ -539,14 +543,13 @@ def showaitem(category_name, item_name):
 
 
 @app.route('/catalogue/new', methods=['GET', 'POST'])
+@login_required
 def newitem():
     '''
     Creates a new item
 
     Arguments: None
     '''
-    if 'username' not in login_session:
-        return redirect('/login')
 
     form = NewItemForm()   # form validation
 
@@ -584,6 +587,7 @@ def newitem():
 
 @app.route(
     '/catalogue/<category_name>/<item_name>/edit', methods=['GET', 'POST'])
+@login_required
 def edititem(category_name, item_name):
     '''
     Edit an item in a category
@@ -592,9 +596,6 @@ def edititem(category_name, item_name):
     category_name: Name of the Category
     item_name: Name of the item
     '''
-    if 'username' not in login_session:
-        return redirect('/login')
-
     category = session.query(Category).filter_by(name=category_name).first()
     editedItem = session.query(Items).filter(and_(
         Items.category_id == category.id, Items.title == item_name)).one()
@@ -648,6 +649,7 @@ def edititem(category_name, item_name):
 
 @app.route(
     '/catalogue/<category_name>/<item_name>/delete', methods=['GET', 'POST'])
+@login_required
 def deleteitem(category_name, item_name):
     '''
     Deletes an item in a category
@@ -656,8 +658,7 @@ def deleteitem(category_name, item_name):
     category_name: Name of the category
     item_name: Name of the item
     '''
-    if 'username' not in login_session:
-        return redirect('/login')
+
     category = session.query(Category).filter_by(name=category_name).first()
     itemtodelete = session.query(Items).filter(and_(
         Items.category_id == category.id, Items.title == item_name)).one()
